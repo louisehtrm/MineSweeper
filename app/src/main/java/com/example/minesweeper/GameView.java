@@ -20,31 +20,31 @@ import java.util.Random;
 
 public class GameView extends View {
 
-    //initialize attributes
-
-    //Rect object for square
+    //Object, style and text on square
     Rect square;
-    //use for color and styling
     private Paint rectPaint;
-    //use to add text
     private TextPaint rectText;
 
-    //stop the game when bomb is found
-    boolean disablingTouch = false;
+    //create the matrix with the cells
+    Cell[][] cell = new Cell[10][10];
+
+    //side length of the square
+    int sideLength;
 
     //the mode in which we are
     public static boolean uncoverMode = true;
 
-    //initialize the matrix with the cells
-    Cell[][] cell = new Cell[10][10];
-    int sideLength;
-
-    //flag number
+    //the flag = means the marked cell
+    TextView flag;
     int flagNb = 0;
 
-    TextView flag;
+    //number of cell that have been marked or uncovered
+    int uncoveredCell = 0;
 
-    //the four constructors
+    //stop the game when bomb is found
+    TextView winner;
+    boolean disablingTouch = false;
+    boolean gameOver = false;
 
     public GameView(Context context) {
         super(context);
@@ -63,18 +63,18 @@ public class GameView extends View {
 
     //initialization method
     private void init(AttributeSet attrs, int defStyle) {
-        //Set the background color.
+
+        //Set the background color
         setBackgroundColor(Color.WHITE);
 
         //initialize the matrix
         initCell();
 
-        //place the mines
+        //place the mines into the matrix
         randomMine();
-
     }
 
-    //initialize the matrix
+    //initialization method of the matrix
     public void initCell() {
         for (int i = 0; i < 10; i++) {
             for(int j = 0; j < 10; j++) {
@@ -85,7 +85,7 @@ public class GameView extends View {
         }
     }
 
-    //choose 20 mines randomly
+    //place 20 mines randomly in the matrix
     public void randomMine() {
         Random rand = new Random();
         int i, j;
@@ -100,125 +100,207 @@ public class GameView extends View {
         }
     }
 
+    //check how many mines is there around one cell
+    public int minesCount(int i, int j) {
+        int count = 0;
+
+        if(i < 9 && j < 9 && cell[i+1][j+1].mine)
+            count++;
+        if(j < 9 && cell[i][j+1].mine)
+            count++;
+        if(i > 0 && j < 9 && cell[i-1][j+1].mine)
+            count++;
+        if(i > 0 && cell[i-1][j].mine)
+            count++;
+        if(i > 0 && j > 0 && cell[i-1][j-1].mine)
+            count++;
+        if(j > 0 && cell[i][j-1].mine)
+            count++;
+        if(i < 9 && j > 0 && cell[i+1][j-1].mine)
+            count++;
+        if(i < 9 && cell[i+1][j].mine)
+            count++;
+
+        return count;
+    }
+
+    //stop when the game is won
+    public void endGame() {
+        //enabled the user to touch other cells
+        disablingTouch = true;
+        //print the winner message
+        winner.setVisibility(VISIBLE);
+    }
+
+    //know the state of a cell
+    //change the color of the cell
+    //add test when needed
+    //count also the number of marked and uncovered cells
+    public String cellState(int i, int j, String str) {
+        str = "";
+
+        //marked cell
+        if(cell[i][j].marked) {
+            rectPaint.setColor(Color.YELLOW);
+            uncoveredCell++;
+        }
+        //covered cell
+        else if(!cell[i][j].unCovered) {
+            rectPaint.setColor(Color.BLACK);
+        }
+        //uncovered cell with mine
+        else if(cell[i][j].mine) {
+            rectPaint.setColor(Color.RED);
+            str = "M";
+        }
+        //uncover cell
+        else {
+            rectPaint.setColor(Color.GRAY);
+            rectText.setColor(Color.DKGRAY);
+            int count = minesCount(i, j);
+            if(count != 0)
+                str = toString().valueOf(count);
+            uncoveredCell++;
+        }
+        return str;
+    }
+
+    //method that handle the user clicks
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);
 
+        //if it's possible to play
         if(!disablingTouch) {
 
-            int x = (int) event.getX(); // get the pixel x
-            int y = (int) event.getY(); // get the pixel y
+            //get the pixels where the user clicked
+            int x = (int) event.getX();
+            int y = (int) event.getY();
 
-            int action = event.getActionMasked(); // get the action
+            //get the action
+            int action = event.getActionMasked();
 
             if (action == MotionEvent.ACTION_DOWN) {
-                if (x < sideLength * 10 && y < sideLength * 10) // check if pixel is on the window
+                //check if the pixel is not out of range
+                if (x < sideLength * 10 && y < sideLength * 10)
                 {
-                    int i = (int) event.getX() / sideLength; // get the index i
-                    int j = (int) event.getY() / sideLength; // get the index j
+                    //get the index for inside the matrix
+                    int i = (int) event.getX() / sideLength;
+                    int j = (int) event.getY() / sideLength;
 
                     //Uncover Mode
                     if(uncoverMode) {
+                        //if not marked, the cell is uncovered
                         if(!cell[j][i].marked) {
-                            cell[j][i].unCovered = true; // set to true
+                            cell[j][i].unCovered = true;
+                            //if it's a mine, the game stops
                             if (cell[j][i].mine) {
                                 disablingTouch = true;
+                                gameOver = true;
                             }
                         }
                     }
 
                     //Marking Mode
                     else {
+                        //if the cell is not marked
                         if(!cell[j][i].marked && !cell[j][i].unCovered) {
                             cell[j][i].marked = true; // set to true
                             flagNb++;
-                            flag.setText("⚑  " + toString().valueOf(flagNb));
                         }
+                        //if has to be de-marked
                         else {
                             cell[j][i].marked = false; // set to false
                             flagNb--;
-                            flag.setText("⚑  " + toString().valueOf(flagNb));
                         }
+                        //change the number of marked cells
+                        flag.setText("⚑  " + toString().valueOf(flagNb));
                     }
                 }
             }
+
+            //refresh the draw
             postInvalidate();
             return true;
         }
         return false;
     }
 
+    //draw the different square of the game
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         // allocations per draw cycle
         int paddingLeft = getPaddingLeft();
-        int paddingTop = getPaddingTop();
+        //int paddingTop = getPaddingTop();
         int paddingRight = getPaddingRight();
-        int paddingBottom = getPaddingBottom();
+        //int paddingBottom = getPaddingBottom();
 
         int contentWidth = getWidth() - paddingLeft - paddingRight;
-        int contentHeight = getHeight() - paddingTop - paddingBottom;
+        //int contentHeight = getHeight() - paddingTop - paddingBottom;
 
-        //Bounds of squares to be drawn (10*10)
+        //bounds of squares to be drawn (10*10)
         int rectBounds = contentWidth/10;
 
-        //Side length of the square (2 = distance between two squares)
         sideLength = rectBounds - 2 ;
 
-        //Paint instance for drawing the squares
+        //paint instance for drawing the squares
         rectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        //Create a rect which is actually a square
+        //create a square
         square = new Rect(10,10, sideLength, sideLength);
 
+        //create a text on the square
         rectText = new TextPaint();
 
-        //Draw the squares
-        //draw ten lines of ten squares
+        rectText.setTextSize(70);
+        rectText.setStyle(TextPaint.Style.FILL);
+        //content of the text
+        String str = "";
+
+        //initialize the nb of uncovered and marked cells at each call
+        uncoveredCell = 0;
+
+        //draw the squares
+        //draw ten lines
         for(int i = 0; i < 10; i++) {
             //draw a line of square at the i index
             for (int j = 0; j < 10; j++) {
 
-                //Preliminary save of the drawing origin to the stack
+                //save of the drawing origin to the stack
                 canvas.save();
 
-                //Translate to draw a row of squares a position (j * rectBound, i*rectBounds)
+                //translate to draw a row of squares a position (j * rectBound, i*rectBounds)
                 canvas.translate(j * rectBounds, i * rectBounds);
 
-                //check the state for the color
-                if(cell[i][j].marked) {
-                    rectPaint.setColor(Color.YELLOW);
-                    canvas.drawRect(square, rectPaint);
-                }
-                else if(!cell[i][j].unCovered) {
-                    rectPaint.setColor(Color.BLACK);
-                    canvas.drawRect(square, rectPaint);
-                }
-                else if(cell[i][j].mine) {
+                //set the color of the text to black by default
+                rectText.setColor(Color.BLACK);
+
+                //case game over, display all the bombs
+                if(gameOver && cell[i][j].mine) {
                     rectPaint.setColor(Color.RED);
-                    rectText.setTextSize(70);
-                    rectText.setStyle(TextPaint.Style.FILL);
-                    rectText.setColor(Color.BLACK);
-
-                    //Draw the square
-                    canvas.drawRect(square, rectPaint);
-
-                    //Draw the text
-                    canvas.drawText("M", j + sideLength * 1/4, i + sideLength * 3/4, rectText);
-
+                    str = "M";
                 }
-                else {
-                    rectPaint.setColor(Color.GRAY);
-                    canvas.drawRect(square, rectPaint);
-                }
+                //call the cellState method to know how to draw the square
+                else
+                    str = cellState(i, j, str);
 
-                //Restore, back to the origin
+                //draw the square
+                canvas.drawRect(square, rectPaint);
+
+                //write the text
+                canvas.drawText(str, j + sideLength * 1/4, i + sideLength * 3/4, rectText);
+
+                //restore, back to the origin
                 canvas.restore();
-
             }
         }
+
+        //if all the cells have been either marked or uncovered and that there is 20 flags
+        //it means for sure that the winner has win
+        //then stop the game by calling the endGame method
+        if(uncoveredCell == 100 && flagNb == 20)
+            endGame();
     }
 }
-

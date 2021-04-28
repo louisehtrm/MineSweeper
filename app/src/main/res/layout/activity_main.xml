@@ -4,60 +4,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    android:background="@color/colorBackground"
     android:orientation="vertical"
-    android:background="@color/colorBackground">
+    tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="380dp"
         android:layout_height="65dp"
         android:layout_gravity="center"
-        android:orientation="horizontal"
-        android:background="@color/colorBand"
         android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp">
+        android:layout_marginBottom="15dp"
+        android:background="@color/colorBand"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/typeMode"
             android:layout_width="130dp"
             android:layout_height="40dp"
-            android:text="@string/modeM"
-            android:onClick="ModeButton"
             android:layout_gravity="center"
-            android:layout_marginStart="10dp"/>
+            android:layout_marginStart="10dp"
+            android:onClick="ModeButton"
+            android:text="@string/modeM"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:background="@drawable/background"
             android:layout_height="30dp"
-            android:orientation="horizontal"
             android:layout_gravity="center"
             android:layout_marginStart="100dp"
-            android:layout_marginEnd="10dp">
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/background"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/flag"
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
-                android:gravity="center"
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="10dp"
+                android:gravity="center"
                 android:text="@string/flagnumber" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
-                android:gravity="center"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="15dp"
-                android:text="@string/totalmines"/>
+                android:gravity="center"
+                android:text="@string/totalmines" />
 
 
         </LinearLayout>
-
-
 
 
     </LinearLayout>
@@ -65,14 +63,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:background="@color/colorBackground"
-        >
+        android:gravity="center">
 
         <com.example.minesweeper.GameView
             android:id="@+id/customView"
             android:layout_width="380dp"
-            android:layout_height="380dp"/>
+            android:layout_height="380dp" />
 
     </LinearLayout>
 
@@ -81,9 +78,20 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="50dp"
         android:onClick="ResetButton"
-        android:text="@string/reset"
-        android:layout_marginTop="50dp"/>
+        android:text="@string/reset" />
 
+    <TextView
+        android:id="@+id/winner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:background="#2DFFFFFF"
+        android:gravity="center"
+        android:text="@string/winnner"
+        android:visibility="invisible"
+        android:textSize="30sp" />
 
 </LinearLayout>
