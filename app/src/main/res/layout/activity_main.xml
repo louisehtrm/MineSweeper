@@ -21,11 +21,12 @@
             android:text="First TextView" />
 
         <Button
-            android:id="@+id/buttontest"
+            android:id="@+id/resetButton"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_weight="1"
-            android:text="First Button" />
+            android:text="@string/reset"
+            android:onClick="ResetButton"/>
 
         <Button
             android:layout_width="0dp"

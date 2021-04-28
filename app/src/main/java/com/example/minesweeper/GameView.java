@@ -27,6 +27,8 @@ public class GameView extends View {
     //use to add text
     private TextPaint rectText;
 
+    boolean disablingTouch = false;
+
     int sideLength;
 
     //initialize the matrix with the cells
@@ -93,22 +95,30 @@ public class GameView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);
 
-        int x = (int)event.getX(); // get the pixel x
-        int y = (int)event.getY(); // get the pixel y
+        Log.d("Debug", "" + disablingTouch);
+        if(!disablingTouch) {
 
-        int action = event.getActionMasked(); // get the action
+            int x = (int) event.getX(); // get the pixel x
+            int y = (int) event.getY(); // get the pixel y
 
-        if (action == MotionEvent.ACTION_DOWN)
-        {
-            if(x < sideLength * 10 && y < sideLength * 10 ) // check if pixel is on the window
-            {
-                int i = (int)event.getX()/sideLength; // get the index i
-                int j = (int)event.getY()/sideLength; // get the index j
-                cell[j][i].unCovered = true; // set to true
+            int action = event.getActionMasked(); // get the action
+
+            if (action == MotionEvent.ACTION_DOWN) {
+                if (x < sideLength * 10 && y < sideLength * 10) // check if pixel is on the window
+                {
+                    int i = (int) event.getX() / sideLength; // get the index i
+                    int j = (int) event.getY() / sideLength; // get the index j
+                    cell[j][i].unCovered = true; // set to true
+                    if (cell[j][i].mine) {
+                        Log.d("Debug", "???????");
+                        disablingTouch = true;
+                    }
+                }
             }
+            postInvalidate();
+            return true;
         }
-        postInvalidate();
-        return true;
+        return false;
     }
 
     @Override
