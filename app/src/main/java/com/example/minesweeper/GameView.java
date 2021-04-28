@@ -10,6 +10,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -27,13 +29,20 @@ public class GameView extends View {
     //use to add text
     private TextPaint rectText;
 
+    //stop the game when bomb is found
     boolean disablingTouch = false;
 
-    int sideLength;
+    //the mode in which we are
+    public static boolean uncoverMode = true;
 
     //initialize the matrix with the cells
     Cell[][] cell = new Cell[10][10];
+    int sideLength;
 
+    //flag number
+    int flagNb = 0;
+
+    TextView flag;
 
     //the four constructors
 
@@ -95,7 +104,6 @@ public class GameView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);
 
-        Log.d("Debug", "" + disablingTouch);
         if(!disablingTouch) {
 
             int x = (int) event.getX(); // get the pixel x
@@ -108,10 +116,29 @@ public class GameView extends View {
                 {
                     int i = (int) event.getX() / sideLength; // get the index i
                     int j = (int) event.getY() / sideLength; // get the index j
-                    cell[j][i].unCovered = true; // set to true
-                    if (cell[j][i].mine) {
-                        Log.d("Debug", "???????");
-                        disablingTouch = true;
+
+                    //Uncover Mode
+                    if(uncoverMode) {
+                        if(!cell[j][i].marked) {
+                            cell[j][i].unCovered = true; // set to true
+                            if (cell[j][i].mine) {
+                                disablingTouch = true;
+                            }
+                        }
+                    }
+
+                    //Marking Mode
+                    else {
+                        if(!cell[j][i].marked && !cell[j][i].unCovered) {
+                            cell[j][i].marked = true; // set to true
+                            flagNb++;
+                            flag.setText("⚑  " + toString().valueOf(flagNb));
+                        }
+                        else {
+                            cell[j][i].marked = false; // set to false
+                            flagNb--;
+                            flag.setText("⚑  " + toString().valueOf(flagNb));
+                        }
                     }
                 }
             }
@@ -161,10 +188,12 @@ public class GameView extends View {
                 canvas.translate(j * rectBounds, i * rectBounds);
 
                 //check the state for the color
-                if(!cell[i][j].unCovered) {
+                if(cell[i][j].marked) {
+                    rectPaint.setColor(Color.YELLOW);
+                    canvas.drawRect(square, rectPaint);
+                }
+                else if(!cell[i][j].unCovered) {
                     rectPaint.setColor(Color.BLACK);
-
-                    //Draw the square
                     canvas.drawRect(square, rectPaint);
                 }
                 else if(cell[i][j].mine) {
@@ -182,8 +211,6 @@ public class GameView extends View {
                 }
                 else {
                     rectPaint.setColor(Color.GRAY);
-
-                    //Draw the square
                     canvas.drawRect(square, rectPaint);
                 }
 

@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">MineSweeper</string>
     <string name="reset">Reset</string>
+    <string name="modeM">Marking</string>
+    <string name="flagnumber"> ⚑  0 </string>
+    <string name="totalmines">💣 20 </string>
 </resources>
