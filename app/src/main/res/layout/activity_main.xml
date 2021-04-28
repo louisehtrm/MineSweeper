@@ -7,30 +7,45 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
-     <Button
-         android:layout_width="match_parent"
-         android:layout_height="75dp"
-         android:text="First Button"/>
-
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:text="Second Button"/>
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="First TextView" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:text="First Button" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:text="Second Button"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Second TextView"/>
+
+
+    </LinearLayout>
 
     <com.example.minesweeper.GameView
         android:layout_width="match_parent"
-        android:layout_height="300dp" />
+        android:layout_height="wrap_content" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:gravity="center"
-        android:text="First TextView"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:gravity="center"
-        android:text="Second TextView"/>
 
 </LinearLayout>
