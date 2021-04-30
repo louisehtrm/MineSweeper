@@ -9,11 +9,11 @@
     tools:context=".MainActivity">
 
     <LinearLayout
-        android:layout_width="380dp"
+        android:layout_width="375dp"
         android:layout_height="65dp"
         android:layout_gravity="center"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
         android:background="@color/colorBand"
         android:orientation="horizontal">
 
@@ -22,7 +22,7 @@
             android:layout_width="130dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="15dp"
             android:onClick="ModeButton"
             android:text="@string/modeM"/>
 
@@ -31,7 +31,6 @@
             android:layout_height="30dp"
             android:layout_gravity="center"
             android:layout_marginStart="100dp"
-            android:layout_marginEnd="10dp"
             android:background="@drawable/background"
             android:orientation="horizontal">
 
@@ -68,8 +67,8 @@
 
         <com.example.minesweeper.GameView
             android:id="@+id/customView"
-            android:layout_width="380dp"
-            android:layout_height="380dp" />
+            android:layout_width="375dp"
+            android:layout_height="375dp" />
 
     </LinearLayout>
 
@@ -78,20 +77,20 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="16dp"
         android:onClick="ResetButton"
         android:text="@string/reset" />
 
     <TextView
         android:id="@+id/winner"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        android:background="#2DFFFFFF"
+        android:layout_marginTop="16dp"
         android:gravity="center"
-        android:text="@string/winnner"
+        android:text="Congratulations!\n   You won the game :)  "
+        android:background="@drawable/background"
         android:visibility="invisible"
-        android:textSize="30sp" />
+        android:textSize="25sp" />
 
 </LinearLayout>

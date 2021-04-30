@@ -10,8 +10,8 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="colorBackground">#888888</color>
+    <color name="colorBackground">#979696</color>
     <color name="colorBand">#0E2137</color>
     <color name="colorButton">#3F4B59</color>
-    <color name="colorStatusBar">#151B22</color>
+    <color name="colorStatusBar">#181F27</color>
 </resources>

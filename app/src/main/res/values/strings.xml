@@ -4,5 +4,4 @@
     <string name="modeM">Marking</string>
     <string name="flagnumber"> ⚑  0 </string>
     <string name="totalmines">💣 20 </string>
-    <string name="winnner">Congratulations!\n You won the game :)</string>
 </resources>

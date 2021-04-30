@@ -155,7 +155,7 @@ public class GameView extends View {
         }
         //uncover cell
         else {
-            rectPaint.setColor(Color.GRAY);
+            rectPaint.setColor(Color.LTGRAY);
             rectText.setColor(Color.DKGRAY);
             int count = minesCount(i, j);
             if(count != 0)
@@ -163,6 +163,77 @@ public class GameView extends View {
             uncoveredCell++;
         }
         return str;
+    }
+
+    //cell bursting
+    public void bursting(int i, int j) {
+        //test for each neighbour
+        if(i < 9 && j < 9 && !cell[i+1][j+1].unCovered) {
+            //if the cell nearby as no mine around it, the method is called recursively on its own neighbour
+            if(minesCount(i + 1, j + 1) == 0) {
+                cell[i + 1][j + 1].unCovered = true;
+                bursting(i + 1, j + 1);
+            }
+            //if not, we just uncover the cell and stop there
+            else
+                cell[i + 1][j + 1].unCovered = true;
+        }
+        if(j < 9 && !cell[i][j+1].unCovered) {
+            if(minesCount(i , j + 1) == 0) {
+                cell[i][j + 1].unCovered = true;
+                bursting(i, j + 1);
+            }
+            else
+                cell[i][j + 1].unCovered = true;
+        }
+        if(i > 0 && j < 9 && !cell[i-1][j+1].unCovered) {
+            if(minesCount(i - 1, j + 1) == 0) {
+                cell[i - 1][j + 1].unCovered = true;
+                bursting(i - 1, j + 1);
+            }
+            else
+                cell[i - 1][j + 1].unCovered = true;
+        }
+        if(i > 0 && !cell[i-1][j].unCovered) {
+            if(minesCount(i - 1, j) == 0) {
+                cell[i - 1][j].unCovered = true;
+                bursting(i - 1, j);
+            }
+            else
+                cell[i - 1][j].unCovered = true;
+        }
+        if(i > 0 && j > 0 && !cell[i-1][j-1].unCovered) {
+            if(minesCount(i - 1, j - 1) == 0) {
+                cell[i - 1][j - 1].unCovered = true;
+                bursting(i - 1, j - 1);
+            }
+            else
+                cell[i - 1][j - 1].unCovered = true;
+        }
+        if(j > 0 && !cell[i][j-1].unCovered) {
+            if(minesCount(i, j - 1) == 0) {
+                cell[i][j - 1].unCovered = true;
+                bursting(i, j - 1);
+            }
+            else
+                cell[i][j - 1].unCovered = true;
+        }
+        if(i < 9 && j > 0 && !cell[i+1][j-1].unCovered) {
+            if(minesCount(i + 1, j - 1) == 0) {
+                cell[i + 1][j - 1].unCovered = true;
+                bursting(i + 1, j - 1);
+            }
+            else
+                cell[i + 1][j - 1].unCovered = true;
+        }
+        if(i < 9 && !cell[i+1][j].unCovered) {
+            if(minesCount(i + 1, j) == 0) {
+                cell[i + 1][j].unCovered = true;
+                bursting(i + 1, j);
+            }
+            else
+                cell[i + 1][j].unCovered = true;
+        }
     }
 
     //method that handle the user clicks
@@ -185,18 +256,22 @@ public class GameView extends View {
                 if (x < sideLength * 10 && y < sideLength * 10)
                 {
                     //get the index for inside the matrix
-                    int i = (int) event.getX() / sideLength;
-                    int j = (int) event.getY() / sideLength;
+                    int i = (int) event.getY() / sideLength;
+                    int j = (int) event.getX() / sideLength;
 
                     //Uncover Mode
                     if(uncoverMode) {
                         //if not marked, the cell is uncovered
-                        if(!cell[j][i].marked) {
-                            cell[j][i].unCovered = true;
+                        if(!cell[i][j].marked) {
+                            cell[i][j].unCovered = true;
                             //if it's a mine, the game stops
-                            if (cell[j][i].mine) {
+                            if (cell[i][j].mine) {
                                 disablingTouch = true;
                                 gameOver = true;
+                            }
+                            //call the bursting method if there is no mines around
+                            else if(minesCount(i, j) == 0 ) {
+                                bursting(i, j);
                             }
                         }
                     }
@@ -204,13 +279,13 @@ public class GameView extends View {
                     //Marking Mode
                     else {
                         //if the cell is not marked
-                        if(!cell[j][i].marked && !cell[j][i].unCovered) {
-                            cell[j][i].marked = true; // set to true
+                        if(!cell[i][j].marked && !cell[i][j].unCovered) {
+                            cell[i][j].marked = true; // set to true
                             flagNb++;
                         }
                         //if has to be de-marked
                         else {
-                            cell[j][i].marked = false; // set to false
+                            cell[i][j].marked = false; // set to false
                             flagNb--;
                         }
                         //change the number of marked cells
@@ -233,12 +308,9 @@ public class GameView extends View {
 
         // allocations per draw cycle
         int paddingLeft = getPaddingLeft();
-        //int paddingTop = getPaddingTop();
         int paddingRight = getPaddingRight();
-        //int paddingBottom = getPaddingBottom();
 
         int contentWidth = getWidth() - paddingLeft - paddingRight;
-        //int contentHeight = getHeight() - paddingTop - paddingBottom;
 
         //bounds of squares to be drawn (10*10)
         int rectBounds = contentWidth/10;
